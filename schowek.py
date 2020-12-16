@@ -60,3 +60,23 @@ app.setFocus("Username")
 
 # start the GUI
 app.go()
+
+
+
+
+
+
+
+
+
+
+
+for pole in range(15):
+    app.addLabel(str(pole), "a", pole // 5, pole % 3)
+for pole in range(15):
+    if pole % 5 == 0:
+        app.setLabelBg(str(pole), "LightYellow")
+    if pole % 5 == 2:
+        app.setLabelBg(str(pole), "LemonChiffon")
+    if pole % 5 == 4:
+        app.setLabelBg(str(pole), "LightGoldenRodYellow")

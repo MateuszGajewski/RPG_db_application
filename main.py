@@ -1,5 +1,6 @@
 from databaseConnection import connection
 from appJar import gui
+from datetime import datetime
 
 class window():
 
@@ -29,13 +30,17 @@ class window():
         if button == "Cancel":
             app.destroySubWindow("Logowanie")
         else:
+            app.enableMenuItem("Open", "Log Out")
+            app.disableMenuItem("Open", "Login")
             usr = app.getEntry("Username")
             pwd = app.getEntry("Password")
             self.database = connection(usr, pwd)
             app.destroySubWindow("Logowanie")
 
+    def doNothing(self):
+        pass
+
     def makeLogin(self):
-        app.disableMenuItem("Open", "Login")
         with app.subWindow('Logowanie', modal = True):
             app.showSubWindow("Logowanie")
             app.setSize(400,200)
@@ -47,8 +52,16 @@ class window():
             app.setLabelFg("title", "orange")
             app.addLabelEntry("Username")
             app.addLabelSecretEntry("Password")
-            app.addButtons(["Submit", "Cancel"], self.confirm)
+            app.addButtons(["Login", "Cancel"], self.confirm)
             app.setFocus("Username")
+
+    def makeLogOut(self):
+        app.enableMenuItem("Open", "Login")
+        app.disableMenuItem("Open", "Log Out")
+        self.database = None
+        self.lista = []
+        self.createdInt = 1;
+        app.infoBox("Wylogowywanie", "Nastąpiło poprawne wylogowanie z Bazy Danych", parent=None)
 
     def createTableOfClass(self):
         if self.database is not None and self.createdInt == 1:
@@ -67,27 +80,36 @@ class window():
                     tmp.append(item)
                 klasyLista.append(tmp)
             app.openTab("Start", "2")
-            app.addTable("tabela_klas", klasyLista)
+            app.setSticky("new")
+            app.setPadding([20, 20])
+            app.addTable("tabela_klas", klasyLista, action=self.doNothing, addRow = None)
             app.stopTab()
+        else:
+            app.infoBox("Błąd", "Nie można wykonać operacji, ponieważ nie zalogowano się do Bazy Danych", parent=None)
 
 if __name__ == "__main__" :
 
     win = window()
     with gui('Baza Danych RPG') as app:
         app.setSize(1280, 720)
+        fileMenu = ["Login", "Log Out"]
+        app.addMenuList("Open", fileMenu, [win.makeLogin, win.makeLogOut])
+        app.disableMenuItem("Open", "Log Out")
         app.startTabbedFrame("Start")
         app.startTab("1")
         #app.registerEvent(win.createDB)
-        app.registerEvent(win.createTableOfClass)
+        #app.registerEvent(win.createTableOfClass)
         app.stopTab()
         app.startTab("2")
+        app.setSticky("n")
+        app.addButtons(["Show Classes"], win.createTableOfClass)
+        #app.addLabel("loop", "New Row", app.getRow(), 0)
+        #app.addButtons(["Show Classes"], win.createTableOfClass)
         app.stopTab()
         app.startTab("3")
         app.stopTab()
         app.stopTabbedFrame()
 
-        fileMenu = ["Login"]
-        app.addMenuList("Open", fileMenu, [win.makeLogin])
         #app.buttons(['LOGIN', 'EXIT'], win.login)
         #app.registerEvent(win.createDB)
         #app.setTabbedFrameSelectedTab("Start", "2")
