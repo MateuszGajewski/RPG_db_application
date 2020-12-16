@@ -1,1 +1,1 @@
-# RPG_db_application
+# Aplikacja obsługująca naszą bazę danych
