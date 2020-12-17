@@ -11,6 +11,10 @@ class window():
         self.createdInt = 1
         self.tabOfAb = 1
         self.lista_class = ["---------"]
+        self.lista_sex = ["N", "F", "M"]
+        self.lista_stat = []
+        for i in range(21):
+            self.lista_stat.append(i)
         self.lista_tab = ["Karty Postaci", "Klasy & Umiejętności", "Rasy & Pochodzenie", "Zarządzanie danymi"]
         for t in range(len(self.lista_tab)):
             tmp = ""
@@ -57,7 +61,7 @@ class window():
         with app.subWindow('Logowanie', modal = True):
             app.setResizable(canResize=False)
             app.showSubWindow("Logowanie")
-            app.setBg("darkred")
+            app.setBg("indianred")
             #duma = app.addImage("dragon", "login.gif")
             #app.setBgImage(duma)
             #photo = ImageTk.PhotoImage(Image.open("login.gif"))
@@ -85,6 +89,7 @@ class window():
         self.lista_class = ["---------"]
         app.openTab("Start", self.lista_tab[1])
         app.changeOptionBox("Wybierz klasę", self.lista_class, 0, 0)
+        app.changeOptionBox("Klasa", self.lista_class, 0, 0)
         app.stopTab()
         app.infoBox("Wylogowywanie", "Nastąpiło poprawne wylogowanie z Bazy Danych", parent=None)
 
@@ -106,7 +111,9 @@ class window():
                 for item in row:
                     tmp.append(item)
                 klasyLista.append(tmp)
-
+            app.openTab("Start", self.lista_tab[0])
+            app.changeOptionBox("Klasa", self.lista_class, 1, 0)
+            app.stopTab()
             app.openTab("Start", self.lista_tab[1])
             app.changeOptionBox("Wybierz klasę", self.lista_class , 1 , 0)
             app.setStretch("both")
@@ -156,7 +163,7 @@ if __name__ == "__main__" :
     win = window()
     with gui('Baza Danych RPG') as app:
         app.setResizable(canResize=True)
-        app.setSize(1280, 720)
+        app.setSize(1280, 880)
         fileMenu = ["Login", "Log Out"]
         app.addMenuList("Open", fileMenu, [win.makeLogin, win.makeLogOut])
         app.disableMenuItem("Open", "Log Out")
@@ -166,24 +173,53 @@ if __name__ == "__main__" :
         app.startTab(win.lista_tab[0])
         app.setStretch("column")
         app.setSticky("new")
-        app.addImage("tlo1", "dnd2.gif", 0, colspan=2)
+        app.addImage("tlo1", "dnd2.gif", 0, colspan=4)
 
-        app.setStretch('column')
-        app.setSticky('wen')
-        app.addLabel('bottom2', '', 1, colspan=2)
-        app.setLabelBg("bottom2", "darkred")
+        app.setPadding([20, 0])
+        app.setStretch("column")
+        app.setSticky("w")
+        app.addLabel("KartaPos", "Karta Postaci", 1, 0)
+        app.addLabel("pusta01", "", 1, 1)
 
-        app.setStretch('column')
-        app.setSticky('wen')
-        app.addLabel('postac', '', 2, 0)
-        app.setLabelBg("postac", "lightred")
-        app.addLabel('postaca', '', 2, 1)
-        app.setLabelBg("postaca", "lightred")
-        app.addLabel('postacb', '', 2, 2)
-        app.setLabelBg("postacb", "lightred")
+        app.setSticky("w")
+        app.addLabelEntry("Nazwa Postaci", 2, 0)
+        app.addLabelOptionBox("Level", win.lista_sex, 2, 1)
+        app.addLabelOptionBox("Plec", win.lista_sex, 2, 2)
 
-        #app.registerEvent(win.createDB)
-        #app.registerEvent(win.createTableOfClass)
+        app.addLabelEntry("Rasa", 3, 0)
+        app.addLabelEntry("Pochodzenie", 3, 1)
+        app.addLabelOptionBox("Klasa", win.lista_class, 3, 2)
+
+        app.addLabelEntry("Wiek", 4, 0)
+        app.addLabelEntry("Wzrost", 4, 1)
+        app.addLabelEntry("Waga", 4, 2)
+
+        app.addLabelEntry("Kolor skóry", 5, 0)
+        app.addLabelEntry("Kolor włosów", 5, 1)
+        app.addLabelEntry("Kolor oczów", 5, 2)
+
+        app.setSticky("w")
+        app.addImage("hp", "Bard.gif", 6, 1)
+        app.setSticky("e")
+        app.addLabelEntry("HP", 6, 0)
+
+        app.setSticky("w")
+        app.addImage("sta", "Bard.gif", 7, 1)
+        app.setSticky("e")
+        app.addLabelEntry("STA", 7, 0)
+
+        app.addLabelOptionBox("STR", win.lista_stat, 8, 0)
+        app.addLabelOptionBox("DEX", win.lista_stat, 9, 0)
+        app.addLabelOptionBox("CON", win.lista_stat, 10, 0)
+        app.addLabelOptionBox("INT", win.lista_stat, 11, 0)
+        app.addLabelOptionBox("WIS", win.lista_stat, 12, 0)
+        app.addLabelOptionBox("CHA", win.lista_stat, 13, 0)
+
+        app.setPadding([0,0])
+        app.setSticky("nes")
+        app.addImage("krol", "postac.gif", 1, 3, rowspan=50)
+
+        app.setBg(colour="beige", override=False)
         app.stopTab()
 
 
@@ -201,6 +237,7 @@ if __name__ == "__main__" :
         app.setStretch('column')
         app.setSticky('wen')
         app.setPadding([20, 4])
+
         app.addLabelOptionBox("Wybierz klasę", win.lista_class , 2 , 0)
         app.addButtons(["Wyświetl umiejętności klasy"], win.createTableOfAbilities, 2, 1)
 
@@ -208,17 +245,41 @@ if __name__ == "__main__" :
         #app.addLabel("loop", "New Row", app.getRow(), 0)
         #app.addButtons(["Show Classes"], win.createTableOfClass)
         app.stopTab()
+
+
         app.startTab(win.lista_tab[2])
         app.setStretch("column")
         app.setSticky("new")
         app.addImage("tlo3", "dnd2.gif")
         app.stopTab()
+
+
         app.startTab(win.lista_tab[3])
         app.setStretch("column")
         app.setSticky("new")
         app.addImage("tlo4", "dnd2.gif")
+
+        app.setStretch('column')
+        app.setSticky('wen')
+        app.addLabel('bottom2', '', 1, colspan=2)
+        app.setLabelBg("bottom2", "darkred")
+
+        app.setStretch('column')
+        app.setSticky('wen')
+        app.addLabel('postac', '', 2, 0)
+        app.setLabelBg("postac", "indianred")
+        app.addLabel('postaca', '', 2, 1)
+        app.setLabelBg("postaca", "indianred")
+        app.addLabel('postacb', '', 2, 2)
+        app.setLabelBg("postacb", "indianred")
+
+        app.addLabel("")
+
+
         app.stopTab()
         app.stopTabbedFrame()
+
+
         app.setTabbedFrameBg("Start", "darkred")
         #app.setTabBg(title = "Start", tab = win.lista_tab[0], colour="darkred")
         #app.buttons(['LOGIN', 'EXIT'], win.login)

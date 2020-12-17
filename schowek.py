@@ -61,8 +61,8 @@ app.setFocus("Username")
 # start the GUI
 app.go()
 
-
-
+# app.registerEvent(win.createDB)
+# app.registerEvent(win.createTableOfClass)
 
 
 self.createdInt2 = 0;
