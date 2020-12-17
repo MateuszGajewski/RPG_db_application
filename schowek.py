@@ -65,7 +65,22 @@ app.go()
 
 
 
-
+self.createdInt2 = 0;
+            umiejLista = []
+            umiejDBNaglowek = self.database.cursor().execute("select column_name from user_tab_cols where table_name = 'UMIEJETNOSCI'")
+            query = ("select * from umiejetnosci u inner join umiejetnoscidlaklasy uk where uk.umiejetnosc = u.nazwa and uk.klasa = %s")
+            umiejDB = self.database.cursor().execute(query, (klasa))
+            tmp = []
+            for row in umiejDBNaglowek:
+                row = str(row).replace("('", "").replace("',)", "")
+                tmp.append(row)
+            umiejLista.append(tmp)
+            for row in umiejDB:
+                tmp = []
+                self.lista_class.append(row[0])
+                for item in row:
+                    tmp.append(item)
+                umiejDB.append(tmp)
 
 
 
