@@ -54,6 +54,32 @@ class window():
             self.database = connection(usr, pwd)
             app.destroySubWindow("Logowanie")
 
+    def sendCharacter(self):
+        nazwa = app.getEntry("Nazwa Postaci")
+        levela = app.getOptionBox("Level Postaci")
+        plec  = app.getOptionBox("Płeć")
+        rasa  = app.getEntry("Rasa")
+        pochodzenia = app.getEntry("Pochodzenie")
+        klasa  = app.getOptionBox("Klasa")
+        wiek  = app.getEntry("Wiek")
+        wzrost = app.getEntry("Wzrost")
+        waga = app.getEntry("Waga")
+        skora = app.getEntry("Kolor skóry")
+        wlosy = app.getEntry("Kolor włosów")
+        oczy = app.getEntry("Kolor oczów")
+        hp = app.getEntry("HP")
+        sta = app.getEntry("STA")
+        strg = app.getOptionBox("STR")
+        dex = app.getOptionBox("DEX")
+        con = app.getOptionBox("CON")
+        inte = app.getOptionBox("INT")
+        wis = app.getOptionBox("WIS")
+        cha = app.getOptionBox("CHA")
+        self.database.cursor().execute(f"insert into Postacie values (POSTACIE_SEQ.NEXTVAL,'{nazwa}', {levela}, {wiek}, {wzrost}, {waga}, '{plec}', '{skora}',"
+                                       f"'{wlosy}', '{oczy}', {hp}, {sta}, {strg}, {dex}, {con}, {inte}, {wis}, {cha}, '{rasa}', '{pochodzenia}', '{klasa}')")
+        self.database.cursor().execute("commit")
+        app.infoBox("Nowa Postać", "Nastąpiło poprawne dodanie postaci do bazy danych", parent=None)
+
     def doNothing(self):
         pass
 
@@ -179,12 +205,12 @@ if __name__ == "__main__" :
         app.setStretch("column")
         app.setSticky("w")
         app.addLabel("KartaPos", "Karta Postaci", 1, 0)
-        app.addLabel("pusta01", "", 1, 1)
+        app.addButtons(["Zatwierdź postać"], win.sendCharacter, 1, 1)
 
         app.setSticky("w")
         app.addLabelEntry("Nazwa Postaci", 2, 0)
-        app.addLabelOptionBox("Level", win.lista_sex, 2, 1)
-        app.addLabelOptionBox("Plec", win.lista_sex, 2, 2)
+        app.addLabelOptionBox("Level Postaci", win.lista_stat, 2, 1)
+        app.addLabelOptionBox("Płeć", win.lista_sex, 2, 2)
 
         app.addLabelEntry("Rasa", 3, 0)
         app.addLabelEntry("Pochodzenie", 3, 1)
@@ -198,26 +224,28 @@ if __name__ == "__main__" :
         app.addLabelEntry("Kolor włosów", 5, 1)
         app.addLabelEntry("Kolor oczów", 5, 2)
 
-        app.setSticky("w")
-        app.addImage("hp", "Bard.gif", 6, 1)
         app.setSticky("e")
         app.addLabelEntry("HP", 6, 0)
+        app.setSticky("w")
+        app.addLabelEntry("STA", 6, 1)
+        app.setSticky("w")
+        #app.addLabelEntry("Plik z avatarem", 7, 1, colspan=2)
 
         app.setSticky("w")
-        app.addImage("sta", "Bard.gif", 7, 1)
-        app.setSticky("e")
-        app.addLabelEntry("STA", 7, 0)
-
-        app.addLabelOptionBox("STR", win.lista_stat, 8, 0)
-        app.addLabelOptionBox("DEX", win.lista_stat, 9, 0)
-        app.addLabelOptionBox("CON", win.lista_stat, 10, 0)
-        app.addLabelOptionBox("INT", win.lista_stat, 11, 0)
-        app.addLabelOptionBox("WIS", win.lista_stat, 12, 0)
-        app.addLabelOptionBox("CHA", win.lista_stat, 13, 0)
+        app.addLabelOptionBox("STR", win.lista_stat, 7, 0)
+        app.addLabelOptionBox("DEX", win.lista_stat, 8, 0)
+        app.addLabelOptionBox("CON", win.lista_stat, 9, 0)
+        app.addLabelOptionBox("INT", win.lista_stat, 10, 0)
+        app.addLabelOptionBox("WIS", win.lista_stat, 11, 0)
+        app.addLabelOptionBox("CHA", win.lista_stat, 12, 0)
 
         app.setPadding([0,0])
-        app.setSticky("nes")
-        app.addImage("krol", "postac.gif", 1, 3, rowspan=50)
+        app.setSticky("nwes")
+        app.addImage("krol", "krol.gif", 1, 3, rowspan=50)
+        #app.addImage("avatar", "avatar.gif", 8, 1)
+
+        #app.setImageSize("avatar", width=300, height=300)
+        #app.setImage("avatar", "avatar.gif")
 
         app.setBg(colour="beige", override=False)
         app.stopTab()
