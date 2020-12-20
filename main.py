@@ -12,10 +12,15 @@ class window():
         self.createdInt = 1
         self.tabOfAb = 1
         self.createdPostacie = 1
+        self.createdRace = 1
+        self.lista_krajow = ["---------"]
+        self.createdKraj = 1
         self.lista_class = ["---------"]
+        self.lista_races = ["---------"]
         self.lista_sex = ["N", "F", "M"]
         self.lista_stat = []
         self.postacie_index = []
+        self.pod_dod = ["Pod", "Dod"]
         for i in range(21):
             self.lista_stat.append(i)
         self.lista_tab = ["Karty Postaci", "Klasy & Umiejętności", "Rasy & Pochodzenie", "Zarządzanie danymi"]
@@ -121,11 +126,16 @@ class window():
         self.lista_class = ["---------"]
         self.createdPostacie = 1
         self.lista_postaci = ["---------"]
+        self.lista_races = ["---------"]
         self.canLoad = 1
+        self.lista_krajow = ["---------"]
+        self.createdKraj = 1
         app.openTab("Start", self.lista_tab[1])
         app.changeOptionBox("Wybierz klasę", self.lista_class, 0, 0)
         app.changeOptionBox("Klasa", self.lista_class, 0, 0)
         app.changeOptionBox("Klasa :", self.lista_class, 0, 0)
+        app.changeOptionBox("Rasa :", self.lista_races, 0, 0)
+        app.changeOptionBox("Pochodzenie :", self.lista_krajow, 0, 0)
         app.stopTab()
         app.infoBox("Wylogowywanie", "Nastąpiło poprawne wylogowanie z Bazy Danych", parent=None)
 
@@ -139,6 +149,46 @@ class window():
                 self.lista_postaci.append(row[1])
                 self.postacie_index.append([row[0], row[1]])
             app.changeOptionBox("Lista postaci : ", self.lista_postaci)
+
+    def createTableOfNations(self):
+        if self.database is not None and self.createdKraj == 1:
+            self.lista_krajow = []
+            self.createdKraj = 0
+            kreajeLista = []
+            kreajeDBNaglowek = self.database.cursor().execute("select column_name from user_tab_cols where table_name = 'KRAJE_POCHODZENIA'")
+            kreajeDB = self.database.cursor().execute('select * from kraje_pochodzenia')
+            '''tmp = []
+            for row in kreajeDBNaglowek:
+                row = str(row).replace("('", "").replace("',)", "")
+                tmp.append(row)
+            kreajeLista.append(tmp)'''
+            for row in kreajeDB:
+                #tmp = []
+                self.lista_krajow.append(row[0])
+                #for item in row:
+                #    tmp.append(item)
+                #kreajeLista.append(tmp)
+            app.changeOptionBox("Pochodzenie :", self.lista_krajow)
+
+    def createTableOfRaces(self):
+        if self.database is not None and self.createdRace == 1:
+            self.lista_races = []
+            self.createdRace = 0
+            rasyLista = []
+            rasyDBNaglowek = self.database.cursor().execute("select column_name from user_tab_cols where table_name = 'RASY'")
+            rasyDB = self.database.cursor().execute('select * from rasy')
+            '''tmp = []
+            for row in rasyDBNaglowek:
+                row = str(row).replace("('", "").replace("',)", "")
+                tmp.append(row)
+            rasyLista.append(tmp)'''
+            for row in rasyDB:
+                #tmp = []
+                self.lista_races.append(row[0])
+                #for item in row:
+                #    tmp.append(item)
+                #rasyLista.append(tmp)
+            app.changeOptionBox("Rasa :", self.lista_races)
 
     def createTableOfClass(self):
         if self.database is not None and self.createdInt == 1:
@@ -179,8 +229,8 @@ class window():
             app.setOptionBox("Level Postaci :", postacDB[2])
             app.setOptionBox("Płeć :", postacDB[6])
 
-            app.setEntry("Rasa :", postacDB[18])
-            app.setEntry("Pochodzenie :", postacDB[19])
+            app.setOptionBox("Rasa :", postacDB[18])
+            app.setOptionBox("Pochodzenie :", postacDB[19])
             app.setOptionBox("Klasa :", postacDB[20])
 
             app.setEntry("Wiek :", postacDB[3])
@@ -212,8 +262,8 @@ class window():
         nazwa = app.getEntry("Nazwa :")
         levela = app.getOptionBox("Level Postaci :")
         plec = app.getOptionBox("Płeć :")
-        rasa = app.getEntry("Rasa :")
-        pochodzenia = app.getEntry("Pochodzenie :")
+        rasa = app.getOptionBox("Rasa :")
+        pochodzenia = app.getOptionBox("Pochodzenie :")
         klasa = app.getOptionBox("Klasa :")
         wiek = app.getEntry("Wiek :")
         wzrost = app.getEntry("Wzrost :")
@@ -298,8 +348,8 @@ class window():
                 app.addLabelOptionBox("Level Postaci", win.lista_stat, 2, 1)
                 app.addLabelOptionBox("Płeć", win.lista_sex, 2, 2)
 
-                app.addLabelEntry("Rasa", 3, 0)
-                app.addLabelEntry("Pochodzenie", 3, 1)
+                app.addLabelOptionBox("Rasa", win.lista_races, 3, 0)
+                app.addLabelOptionBox("Pochodzenie", win.lista_krajow, 3, 1)
                 app.addLabelOptionBox("Klasa", win.lista_class, 3, 2)
 
                 app.addLabelEntry("Wiek", 4, 0)
@@ -370,8 +420,8 @@ if __name__ == "__main__" :
         app.addLabelOptionBox("Level Postaci :", win.lista_stat, 4, 1)
         app.addLabelOptionBox("Płeć :", win.lista_sex, 4, 2)
 
-        app.addLabelEntry("Rasa :", 5, 0)
-        app.addLabelEntry("Pochodzenie :", 5, 1)
+        app.addLabelOptionBox("Rasa :", win.lista_races, 5, 0)
+        app.addLabelOptionBox("Pochodzenie :", win.lista_krajow, 5, 1)
         app.addLabelOptionBox("Klasa :", win.lista_class, 5, 2)
 
         app.addLabelEntry("Wiek :", 6, 0)
@@ -403,6 +453,8 @@ if __name__ == "__main__" :
         app.setSticky("nes")
         app.addImage("krolGlowny", "krol.gif", 1, 3, rowspan=50)
         app.registerEvent(win.createTableOfCharacters)
+        app.registerEvent(win.createTableOfRaces)
+        app.registerEvent(win.createTableOfNations)
         #app.addImage("avatar", "avatar.gif", 8, 1)
 
         #app.setImageSize("avatar", width=300, height=300)
@@ -425,7 +477,7 @@ if __name__ == "__main__" :
 
         app.setStretch('column')
         app.setSticky('wen')
-        app.setPadding([20, 4])
+        app.setPadding([20, 0])
 
         app.addLabelOptionBox("Wybierz klasę", win.lista_class , 2 , 0)
         app.addButtons(["Wyświetl umiejętności klasy"], win.createTableOfAbilities, 2, 1)
@@ -439,7 +491,24 @@ if __name__ == "__main__" :
         app.startTab(win.lista_tab[2])
         app.setStretch("column")
         app.setSticky("new")
-        app.addImage("tlo3", "dnd2.gif")
+        app.addImage("tlo3", "dnd2.gif", colspan=4)
+
+        app.setSticky("w")
+        app.setPadding([20, 10])
+        app.addLabel("Dodawanie Rasy", "Dodawanie Rasy", 1, 0)
+        app.addLabel("puste31", "", 1, 1)
+        app.addLabel("Dodawanie Pochodzenia", "Dodawanie Pochodzenia", 1, 2)
+        app.addLabel("puste32", "", 1, 3)
+        app.addLabelEntry("Nazwa rasy :", 2, 0)
+        app.addLabel("RasaDoWczytania", "Opis rasy:", 3, 0)
+        app.setSticky("nwes")
+        app.addTextArea("Opis rasy :", 4, 0, colspan=1, rowspan=4)
+        app.setSticky("w")
+        app.addLabelEntry("Długość życia:", 8, 0)
+        app.addLabelOptionBox("Pod / Dod :", win.pod_dod, 9, 0)
+        app.addLabelOptionBox("Efekt rasy :", win.pod_dod, 10, 0)
+        app.addLabelOptionBox("Nazwa języka :", win.pod_dod, 11, 0)
+        app.addButtons(['Dodaj rasę'], win.doNothing, 11, 1)
         app.stopTab()
 
 
